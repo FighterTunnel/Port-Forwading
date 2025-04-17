@@ -1,0 +1,70 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      match:
+        macaddress: 00:e0:b6:19:2a:c8
+      set-name: eth0
+      dhcp4: true
+      dhcp6: true
+    eth1:
+      match:
+        macaddress: 0c:5b:8f:27:9a:64
+      set-name: eth1
+      dhcp4: true
+      dhcp6: true
+    eth2:
+      match:
+        macaddress: 00:e6:b6:12:2a:c9
+      set-name: eth2
+      dhcp4: true
+      dhcp6: true
+    eth3:
+      match:
+        macaddress: 00:e3:b6:a9:2a:c2
+      set-name: eth3
+      dhcp4: true
+      dhcp6: true
+    eth4:
+      match:
+        macaddress: 00:e7:e6:1a:2a:c3
+      set-name: eth4
+      dhcp4: true
+      dhcp6: true
+    eth5:
+      match:
+        macaddress: 00:e0:a6:2e:2a:c1
+      set-name: eth5
+      dhcp4: true
+      dhcp6: true
+    eth6:
+      match:
+        macaddress: 00:e8:a6:19:2a:e2
+      set-name: eth6
+      dhcp4: true
+      dhcp6: true
+    eth7:
+      match:
+        macaddress: 00:e5:b6:13:8a:e9
+      set-name: eth7
+      dhcp4: true
+      dhcp6: true
+    eth8:
+      match:
+        macaddress: 00:a8:b9:e3:2a:c0
+      set-name: eth8
+      dhcp4: true
+      dhcp6: true
+    eth9:
+      match:
+        macaddress: 00:e0:8e:16:2a:2a
+      set-name: eth9
+      dhcp4: true
+      dhcp6: true
+    eth10:
+      match:
+        macaddress: 00:e0:4e:a5:2a:a4
+      set-name: eth10
+      dhcp4: true
+      dhcp6: true
