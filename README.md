@@ -18,6 +18,17 @@ This document provides a guide for using the `example.sh` script, which manages 
 
 ## Example Responses
 
+
+
+## Detailed Command Usage
+
+### 1. Create User
+Creates a new SOCKS5 proxy user.
+
+**Example**:
+```bash
+./example.sh create user1 password1 20000 eth0 ipv4 false
+```
 ### Successful Response
 ```json
 {
@@ -53,17 +64,6 @@ This document provides a guide for using the `example.sh` script, which manages 
   }
 }
 ```
-
-## Detailed Command Usage
-
-### 1. Create User
-Creates a new SOCKS5 proxy user.
-
-**Example**:
-```bash
-./example.sh create user1 password1 20000 eth0 ipv4 false
-```
-
 ### 2. List Users
 Lists all existing users and their details.
 
@@ -71,7 +71,73 @@ Lists all existing users and their details.
 ```bash
 ./example.sh list
 ```
-
+### Successful Response
+```
+{"status":"success","message":"Found 2 users","timestamp":"2025-04-19 21:03:35","data":{
+      "users": [{
+  "username": "fest",
+  "port": 1816,
+  "address_type": "ipv4",
+  "password": "",
+  "status": "active",
+  "service": "socks5@fest",
+  "interface": "",
+  "interface_ipv4": "",
+  "interface_ipv6": "",
+  "interface_link_local_ipv6": "",
+  "port_forwarding": false,
+  "service_details": {
+    "active_state": "active",
+    "sub_state": "running"
+  },
+  "last_logs": []
+},{
+  "username": "user2",
+  "port": 21002,
+  "address_type": "ipv6",
+  "password": "",
+  "status": "active",
+  "service": "socks5@user2",
+  "interface": "eth2",
+  "interface_ipv4": "192.168.8.100",
+  "interface_ipv6": "2400:9800:f9:16c1:baab:be34:0:2",
+  "interface_link_local_ipv6": "fe80::7199:346a:2bdf:bbf0",
+  "port_forwarding": true,
+  "service_details": {
+    "active_state": "active",
+    "sub_state": "running"
+  },
+  "last_logs": ["[2025-04-19 07:28:21] [E] 0x7f94005d80 socks5 server connect","[2025-04-19 07:28:21] [E] 0x7f94005a40 socks5 server connect"]
+}],
+      "system": {
+      "total_users": 2,
+      "total_interfaces": 3,
+      "modem_interface": "eth1",
+      "modem_ip": "192.168.9.1",
+      "wireguard_interface": "wg0",
+      "wireguard_ipv4": "10.66.66.2",
+      "wireguard_ipv6": "fd42:42:42::2",
+      "interfaces": [{
+          "name": "eth0",
+          "type": ""regular"",
+          "ipv4": "192.168.1.67",
+          "ipv6": "",
+          "link_local_ipv6": "fe80::ce51:1dd2:f7f6:b738"
+        },{
+          "name": "eth1",
+          "type": ""modem"",
+          "ipv4": "192.168.9.100",
+          "ipv6": "",
+          "link_local_ipv6": "fe80::2929:ba2e:4c86:6f28"
+        },{
+          "name": "eth2",
+          "type": ""regular"",
+          "ipv4": "192.168.8.100",
+          "ipv6": "2400:9800:f9:16c1:baab:be34:0:2",
+          "link_local_ipv6": "fe80::7199:346a:2bdf:bbf0"
+        }]}
+    },"details":{"users_dir":"/root/users","file_count":2}}
+```
 ### 3. Check User
 Checks the details of a specific user.
 
