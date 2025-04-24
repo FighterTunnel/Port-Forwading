@@ -17,15 +17,15 @@ fi
 
 echo ""
 echo "1) Tambahkan macvlan"
-echo "2) Hapus semua macvlan yang dibuat"
+echo "2) Hapus semua macvlan yang dibuat untuk $parent"
 read -p "Pilih aksi (1/2): " action
 
 if [[ "$action" == "1" ]]; then
   read -p "Berapa banyak macvlan yang ingin ditambahkan? " jumlah
 
   for i in $(seq 1 "$jumlah"); do
-    name="macvlan${i}"
-    echo "➤ Menambahkan $name di atas $parent"
+    name="virtual${i}-${parent}"
+    echo "➤ Menambahkan interface $name di atas $parent"
     sudo nmcli connection add type macvlan \
       con-name "$name" \
       ifname "$name" \
@@ -37,15 +37,15 @@ if [[ "$action" == "1" ]]; then
   done
 
   echo ""
-  echo "✅ Selesai menambahkan $jumlah macvlan interface."
+  echo "✅ Selesai menambahkan $jumlah macvlan interface di atas $parent."
 
 elif [[ "$action" == "2" ]]; then
-  echo "➤ Menghapus semua koneksi macvlan..."
-  for conn in $(nmcli connection show | grep macvlan | awk '{print $1}'); do
+  echo "➤ Menghapus semua koneksi macvlan dengan nama virtual*-{$parent}"
+  for conn in $(nmcli connection show | grep "virtual[0-9]*-${parent}" | awk '{print $1}'); do
     echo "Menghapus koneksi: $conn"
     sudo nmcli connection delete "$conn"
   done
-  echo "✅ Semua koneksi macvlan telah dihapus."
+  echo "✅ Semua koneksi virtual*-{$parent} telah dihapus."
 
 else
   echo "❌ Aksi tidak dikenali."
