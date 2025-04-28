@@ -1,3 +1,99 @@
+# API Documentation
+
+This project provides a REST API to manage system, users, modems, backups, SMS, and network interfaces.
+
+## Endpoints
+
+### Interfaces
+- `GET /api/interfaces`  
+  _Replaces_: `list-interfaces`
+
+### Users
+- `GET /api/users`  
+  _Replaces_: `list-users`
+- `GET /api/users/:username/details`  
+  _Replaces_: `check <username>`
+- `POST /api/users`  
+  _Replaces_: `create`
+- `POST /api/users/sync`  
+  _Replaces_: `sync`
+- `DELETE /api/users/:username`  
+  _Replaces_: `delete <username>`
+- `POST /api/users/:username/expiration`  
+  _Replaces_: `set-expiration`
+- `GET /api/users/expired`  
+  _Replaces_: `check-expired`
+- `POST /api/users/:username/port-forward`  
+  _Replaces_: `port-forward`
+- `POST /api/users/:username/rotate-modem`  
+  _Replaces_: `rotate <username>`
+- `PUT /api/users/:username/interface`  
+  _Replaces_: `switch-interface`
+- `PUT /api/users/:username/ip-type`  
+  _Replaces_: `switch-ip-type`
+- `POST /api/users/:username/suspend`  
+  _Replaces_: `suspend`
+- `POST /api/users/:username/unsuspend`  
+  _Replaces_: `unsuspend`
+- `POST /api/users/:username/expire`  
+  _Replaces_: `expire`
+
+### System
+- `GET /api/system/status`  
+  _Replaces_: `system-status`
+- `GET /api/system/summary`  
+  _Replaces_: `check (no args)`
+- `GET /api/system/device-info`  
+  _Replaces_: `device-info`
+- `GET /api/system/traffic-info`  
+  _Replaces_: `traffic-info`
+- `POST /api/system/rotate-public`  
+  _Replaces_: `rotate-public`
+- `POST /api/system/sync-eth`  
+  _Replaces_: `sync-eth`
+
+### Modems
+- `GET /api/modems` or `GET /api/modems/:interface`  
+  _Replaces_: `modem-info [interface]`
+
+### SMS
+- `GET /api/sms/:interface`  
+  _Replaces_: `sms list <interface>`
+- `POST /api/sms`  
+  _Replaces_: `sms send`
+- `DELETE /api/sms/:interface/:index`  
+  _Replaces_: `sms delete <interface> <index>`
+
+### Backups
+- `POST /api/backups`  
+  _Replaces_: `backup create`
+- `GET /api/backups`  
+  _Replaces_: `backup list`
+- `POST /api/backups/restore`  
+  _Replaces_: `backup restore <backupName>`
+
+### Port Forwards
+- `GET /api/port-forwards/check`  
+  _Replaces_: `check-forwards`
+
+### WireGuard
+- `POST /api/wireguard/config`  
+  _Replaces_: `add-wg`
+
+## Existing (Unchanged) Endpoints
+- `POST /api/get-admin-token`
+- `POST /api/rotate-links`
+- `GET /api/download-user-config`
+- `POST /rotate`
+
+---
+
+## Notes
+- Make sure to authenticate properly where required.
+- Some endpoints require parameters (e.g., `:username`, `:interface`, etc.).
+
+
+
 # API Documentation Via Bash Shell
 This document provides a guide for using the `example.sh` script, which manages SOCKS5 proxy users, WireGuard configurations, and port forwarding. Below are the available commands, their usage, and example responses.
 
