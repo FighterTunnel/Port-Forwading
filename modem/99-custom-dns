@@ -1,0 +1,118 @@
+#!/bin/bash
+# NetworkManager Dispatcher Script for Custom DNS Routing
+# Place in /etc/NetworkManager/dispatcher.d/ and make executable (chmod +x)
+
+# --- Configuration ---
+GOOGLE_IPV4_DNS="8.8.8.8 8.8.4.4" # Google Primary & Secondary IPv4
+GOOGLE_IPV6_DNS="2001:4860:4860::8888 2001:4860:4860::8844" # Google Primary & Secondary IPv6
+LOG_FILE="/var/log/nm-dispatcher-custom-dns.log"
+# --- End Configuration ---
+
+IFACE="$1" # Interface name (e.g., eth0)
+ACTION="$2" # Action (e.g., up, down, vpn-up, vpn-down)
+
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - [$IFACE/$ACTION] $1" >> "$LOG_FILE"
+}
+
+log "Script triggered."
+
+# --- Determine Table ID and Priority based on Interface ---
+case "$IFACE" in
+    lo) exit 0 ;; # Ignore loopback
+    eth*) TABLE_ID=100 ;;
+    wlan*) TABLE_ID=200 ;;
+    wwan*|cdc*) TABLE_ID=250 ;; # Mobile broadband
+    vpn*|tun*) TABLE_ID=300 ;; # VPNs
+    *) TABLE_ID=400 ;; # Default for others
+esac
+TABLE_NAME="${IFACE}_dns"
+# Assign priority based on table ID - lower ID means higher priority preference generally
+# Ensure priorities are unique and don't clash with system defaults (usually < 30000)
+PRIORITY=$((TABLE_ID + 10000))
+
+# --- Handle Actions ---
+if [[ "$ACTION" == "up" || "$ACTION" == "vpn-up" ]]; then
+    log "Action is '$ACTION'. Configuring interface..."
+
+    # Wait a moment for the interface to be fully ready (optional)
+    sleep 2
+
+    GATEWAY=$(ip route show dev "$IFACE" | grep default | awk '{print $3}')
+
+    if [ -z "$GATEWAY" ]; then
+        log "ERROR: Gateway for $IFACE not found. Cannot configure routing."
+        exit 1
+    fi
+    log "Gateway: $GATEWAY"
+
+    # --- Ensure Routing Table Exists in /etc/iproute2/rt_tables ---
+    if ! grep -qP "^\s*$TABLE_ID\s+$TABLE_NAME\b" /etc/iproute2/rt_tables; then
+        log "Adding routing table $TABLE_ID $TABLE_NAME to /etc/iproute2/rt_tables"
+        echo -e "$TABLE_ID\\t$TABLE_NAME" >> /etc/iproute2/rt_tables
+    fi
+
+    # --- Cleanup Potentially Existing Config for this Interface ---
+    log "Cleaning up old rules/routes for $IFACE (Table: $TABLE_NAME, Priority: $PRIORITY)..."
+    ip rule del priority $PRIORITY 2>/dev/null || true # Delete by specific priority first
+    ip rule del lookup $TABLE_NAME 2>/dev/null || true # Delete any rule looking up this table
+    ip route flush table $TABLE_NAME 2>/dev/null || true # Flush the specific table
+
+    # --- Create Custom Route and Rule ---
+    log "Adding default route via $GATEWAY dev $IFACE table $TABLE_NAME"
+    ip route add default via "$GATEWAY" dev "$IFACE" table "$TABLE_NAME"
+    log "Adding rule oif $IFACE lookup $TABLE_NAME priority $PRIORITY"
+    ip rule add oif "$IFACE" lookup "$TABLE_NAME" priority $PRIORITY
+
+    # --- Configure NetworkManager Connection ---
+    # Find the active connection UUID for the interface device
+    CONN_UUID=$(nmcli -t -f UUID,DEVICE connection show --active | grep ":$IFACE$" | cut -d: -f1 | head -n 1)
+
+    if [ -z "$CONN_UUID" ]; then
+         # Sometimes the connection isn't reported active immediately, try finding by device name only
+         CONN_UUID=$(nmcli -t -f UUID,TYPE,DEVICE connection show | grep ":$IFACE$" | cut -d: -f1 | head -n 1)
+         if [ -z "$CONN_UUID" ]; then
+             log "ERROR: Could not find connection UUID for interface $IFACE. Cannot configure DNS in NM."
+             # Don't exit, routing rules are still in place, but DNS might be wrong
+         else
+              log "WARN: Found connection UUID $CONN_UUID for $IFACE, but it wasn't reported active. Proceeding with caution."
+         fi
+    else
+         log "Found active connection UUID $CONN_UUID for $IFACE."
+    fi
+
+    if [ -n "$CONN_UUID" ]; then
+         log "Configuring Google DNS (IPv4/IPv6) and ignore-auto-dns for connection $CONN_UUID..."
+         # Set DNS and ignore auto settings
+         nmcli connection modify "$CONN_UUID" ipv4.dns "$GOOGLE_IPV4_DNS" ipv6.dns "$GOOGLE_IPV6_DNS"
+         nmcli connection modify "$CONN_UUID" ipv4.ignore-auto-dns yes ipv6.ignore-auto-dns yes
+
+         # Reapply settings - use 'modify' then 'up' which should reassert if active
+         # Note: 'nmcli con up' on an already active connection *might* briefly interrupt,
+         # but is often needed to ensure DNS changes apply immediately.
+         # Alternatively, NetworkManager might pick up changes automatically after modify. Test behavior.
+         log "Attempting to re-apply connection $CONN_UUID to activate DNS changes..."
+         nmcli connection up "$CONN_UUID" || log "WARN: 'nmcli connection up $CONN_UUID' failed. DNS changes might require manual reconnection or network restart."
+    fi
+
+    log "Configuration for '$ACTION' finished."
+
+elif [[ "$ACTION" == "down" || "$ACTION" == "vpn-down" ]]; then
+    log "Action is '$ACTION'. Cleaning up for interface..."
+
+    # --- Cleanup Rules and Routes ---
+    log "Removing routing rule priority $PRIORITY / lookup $TABLE_NAME..."
+    ip rule del priority $PRIORITY 2>/dev/null || true
+    ip rule del lookup $TABLE_NAME 2>/dev/null || true
+    log "Flushing routing table $TABLE_NAME..."
+    ip route flush table $TABLE_NAME 2>/dev/null || true
+
+    # Note: We don't typically revert DNS settings in NetworkManager on 'down',
+    # as the connection profile retains the settings for the next 'up'.
+    log "Cleanup for '$ACTION' finished."
+
+else
+    log "Ignoring action '$ACTION'."
+fi
+
+exit 0
