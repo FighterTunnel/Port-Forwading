@@ -106,7 +106,27 @@ for IFACE in $ACTIVE_INTERFACES; do
     # Increment counter untuk tabel berikutnya
     TABLE_ID_COUNTER=$((TABLE_ID_COUNTER + 1))
 done
+cat <<EOF >/etc/systemd/resolved.conf
+[Resolve]
+#DNS=
+#FallbackDNS=
+#Domains=
+#LLMNR=no
+#MulticastDNS=no
+#DNSSEC=no
+#DNSOverTLS=no
+#Cache=yes
+DNSStubListener=yes
+#ReadEtcHosts=yes
+DNSOverHTTPS=yes # Aktifkan DoH
+#DNS=8.8.8.8#dns.google 8.8.4.4#dns.google 1.1.1.1#cloudflare-dns.com 1.0.0.1#cloudflare-dns.com # Tentukan server DoH
+# FallbackDNS= # Kosongkan agar tidak fallback ke DNS biasa jika DoH gagal sementara
+# Bisa juga hanya pakai Google atau Cloudflare saja
+# DNS=8.8.8.8#dns.google 8.8.4.4#dns.google
+DNS=1.1.1.1#cloudflare-dns.com 1.0.0.1#cloudflare-dns.com # Hanya pakai Cloudflare DoH
+FallbackDNS= # Tetap kosongkan fallback
 
+EOF
 # 5. Force /etc/resolv.conf to use Google DNS
 # Overwrite resolv.conf to ensure default lookups use Google DNS,
 # even if NetworkManager adds other servers based on DHCP etc.
