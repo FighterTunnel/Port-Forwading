@@ -1,0 +1,97 @@
+[
+  {
+    "operator": "telkomsel",
+    "apn_list": [
+      {"apn":"internet","ip_type":"ipv4v6"},
+      {"apn":"telkomsel","ip_type":"ipv4v6"},
+      {"apn":"internet","ip_type":"ipv4"},
+      {"apn":"telkomsel4g","ip_type":"ipv4"},
+      {"apn":"aha","ip_type":"ipv4"},
+      {"apn":"flash","ip_type":"ipv4v6"},
+      {"apn":"wap","ip_type":"ipv4"},
+      {"apn":"sabartbs5","ip_type":"ipv4"},
+      {"apn":"internet.proxy","ip_type":"ipv4"},
+      {"apn":"tsel-broadband","ip_type":"ipv4v6"}
+    ]
+  },
+
+  {
+    "operator": "axis",
+    "apn_list": [
+      {"apn":"everywhere","ip_type":"ipv4v6"},
+      {"apn":"axis","ip_type":"ipv4v6"},
+      {"apn":"axisnet","ip_type":"ipv4"},
+      {"apn":"internet","ip_type":"ipv4"},
+      {"apn":"xlunlimited","ip_type":"ipv4"},
+      {"apn":"axis4g","ip_type":"ipv4v6"},
+      {"apn":"axisdata","ip_type":"ipv4"},
+      {"apn":"fast.axis","ip_type":"ipv4"},
+      {"apn":"axisbb","ip_type":"ipv4"},
+      {"apn":"axis-stream","ip_type":"ipv4v6"}
+    ]
+  },
+
+  {
+    "operator": "xl",
+    "apn_list": [
+      {"apn":"internet","ip_type":"ipv4v6"},
+      {"apn":"www.xlgprs.net","ip_type":"ipv4"},
+      {"apn":"xl","ip_type":"ipv4v6"},
+      {"apn":"xl4g","ip_type":"ipv4"},
+      {"apn":"xldata","ip_type":"ipv4"},
+      {"apn":"xlunlimited","ip_type":"ipv4v6"},
+      {"apn":"internetxl","ip_type":"ipv4"},
+      {"apn":"xlstream","ip_type":"ipv4"},
+      {"apn":"bbxl","ip_type":"ipv4"},
+      {"apn":"superxl","ip_type":"ipv4v6"}
+    ]
+  },
+
+  {
+    "operator": "indosat",
+    "apn_list": [
+      {"apn":"indosatgprs","ip_type":"ipv4v6"},
+      {"apn":"internet","ip_type":"ipv4"},
+      {"apn":"indosat","ip_type":"ipv4v6"},
+      {"apn":"im3","ip_type":"ipv4"},
+      {"apn":"m3-access","ip_type":"ipv4"},
+      {"apn":"indosatooredoo","ip_type":"ipv4v6"},
+      {"apn":"fast.indosat","ip_type":"ipv4"},
+      {"apn":"internet.indosat","ip_type":"ipv4"},
+      {"apn":"ioh","ip_type":"ipv4v6"},
+      {"apn":"indosat4g","ip_type":"ipv4"}
+    ]
+  },
+
+  {
+    "operator": "tri",
+    "apn_list": [
+      {"apn":"3data","ip_type":"ipv4v6"},
+      {"apn":"3gprs","ip_type":"ipv4"},
+      {"apn":"tri.co.id","ip_type":"ipv4"},
+      {"apn":"internet","ip_type":"ipv4"},
+      {"apn":"3internet","ip_type":"ipv4v6"},
+      {"apn":"tri4g","ip_type":"ipv4"},
+      {"apn":"3fast","ip_type":"ipv4"},
+      {"apn":"three","ip_type":"ipv4"},
+      {"apn":"3stream","ip_type":"ipv4v6"},
+      {"apn":"bima","ip_type":"ipv4"}
+    ]
+  },
+
+  {
+    "operator": "smartfren",
+    "apn_list": [
+      {"apn":"smartfren4g","ip_type":"ipv4v6"},
+      {"apn":"smartfren","ip_type":"ipv4"},
+      {"apn":"internet","ip_type":"ipv4"},
+      {"apn":"andromax","ip_type":"ipv4"},
+      {"apn":"smf","ip_type":"ipv4"},
+      {"apn":"fast.smartfren","ip_type":"ipv4v6"},
+      {"apn":"smartdata","ip_type":"ipv4"},
+      {"apn":"sf4g","ip_type":"ipv4"},
+      {"apn":"lte.smartfren","ip_type":"ipv4v6"},
+      {"apn":"volte.smartfren","ip_type":"ipv4"}
+    ]
+  }
+]
